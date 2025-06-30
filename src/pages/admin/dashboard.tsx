@@ -57,11 +57,15 @@ export default function Dashboard() {
         const articles = await articlesResponse.json();
         const contacts = await contactsResponse.json();
 
+        // Verificar se os dados são arrays
+        const articlesArray = Array.isArray(articles) ? articles : [];
+        const contactsArray = Array.isArray(contacts) ? contacts : [];
+
         setStats({
-          totalArticles: articles.length,
-          totalContacts: contacts.length,
-          recentArticles: articles.slice(0, 5),
-          recentContacts: contacts.slice(0, 5),
+          totalArticles: articlesArray.length,
+          totalContacts: contactsArray.length,
+          recentArticles: articlesArray.slice(0, 5),
+          recentContacts: contactsArray.slice(0, 5),
         });
       }
     } catch (error) {

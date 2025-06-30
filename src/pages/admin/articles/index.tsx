@@ -37,7 +37,9 @@ export default function ArticlesList() {
 
       if (response.ok) {
         const data = await response.json();
-        setArticles(data);
+        // Verificar se os dados são um array
+        const articlesArray = Array.isArray(data) ? data : [];
+        setArticles(articlesArray);
       }
     } catch (error) {
       console.error("Erro ao carregar artigos:", error);

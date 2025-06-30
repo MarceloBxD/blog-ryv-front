@@ -32,7 +32,9 @@ export default function WhatsAppContacts() {
 
       if (response.ok) {
         const data = await response.json();
-        setContacts(data);
+        // Verificar se os dados são um array
+        const contactsArray = Array.isArray(data) ? data : [];
+        setContacts(contactsArray);
       }
     } catch (error) {
       console.error("Erro ao carregar contatos:", error);
