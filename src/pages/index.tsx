@@ -1,115 +1,239 @@
-import Image from "next/image";
-import { Geist, Geist_Mono } from "next/font/google";
+import React, { useState, useEffect, useCallback } from "react";
+import Layout from "../components/Layout";
+import HeroSection from "../components/HeroSection";
+import ArticleCard from "../components/ArticleCard";
+import { MagnifyingGlassIcon, FunnelIcon } from "@heroicons/react/24/outline";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
-
-export default function Home() {
-  return (
-    <div
-      className={`${geistSans.className} ${geistMono.className} grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]`}
-    >
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm/6 text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-[family-name:var(--font-geist-mono)] font-semibold">
-              src/pages/index.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=default-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=default-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
-        </div>
-      </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=default-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=default-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=default-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
-    </div>
-  );
+interface Article {
+  id: number;
+  title: string;
+  slug: string;
+  excerpt: string;
+  imageURL: string;
+  category: string;
+  author: string;
+  publishedAt: string;
+  viewCount: number;
+  tags: string;
 }
+
+interface Category {
+  id: number;
+  name: string;
+  slug: string;
+  description: string;
+  color: string;
+}
+
+const HomePage: React.FC = () => {
+  const [articles, setArticles] = useState<Article[]>([]);
+  const [categories, setCategories] = useState<Category[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+
+  // Carregar artigos da API
+  const fetchArticles = useCallback(async () => {
+    setLoading(true);
+    try {
+      const params = new URLSearchParams({
+        page: currentPage.toString(),
+        limit: "9",
+      });
+
+      if (selectedCategory) {
+        params.append("category", selectedCategory);
+      }
+
+      const response = await fetch(
+        `http://localhost:3001/api/articles?${params}`
+      );
+      const data = await response.json();
+
+      setArticles(data.articles || []);
+      setTotalPages(data.pagination?.pages || 1);
+    } catch (error) {
+      console.error("Erro ao carregar artigos:", error);
+    } finally {
+      setLoading(false);
+    }
+  }, [currentPage, selectedCategory]);
+
+  // Carregar categorias
+  const fetchCategories = useCallback(async () => {
+    try {
+      const response = await fetch(
+        "http://localhost:3001/api/articles/categories"
+      );
+      const data = await response.json();
+      setCategories(data || []);
+    } catch (error) {
+      console.error("Erro ao carregar categorias:", error);
+    }
+  }, []);
+
+  useEffect(() => {
+    fetchCategories();
+  }, [fetchCategories]);
+
+  useEffect(() => {
+    fetchArticles();
+  }, [fetchArticles]);
+
+  // Filtrar artigos por busca
+  const filteredArticles = articles.filter(
+    (article) =>
+      article.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      article.excerpt.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      article.tags.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
+  const handleCategoryChange = (category: string) => {
+    setSelectedCategory(category);
+    setCurrentPage(1);
+  };
+
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+    // A busca é feita localmente nos artigos já carregados
+  };
+
+  return (
+    <Layout>
+      <HeroSection />
+      <section id="artigos" className="py-16 bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          {/* Section Header */}
+          <div className="text-center mb-12">
+            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+              Artigos Especializados
+            </h2>
+            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+              Conteúdo exclusivo sobre saúde mental, ótica e optometria. Aprenda
+              como cuidar da sua visão e bem-estar.
+            </p>
+          </div>
+          <div className="mb-8 space-y-4">
+            <form onSubmit={handleSearch} className="max-w-md mx-auto">
+              <div className="relative">
+                <MagnifyingGlassIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
+                <input
+                  type="text"
+                  placeholder="Buscar artigos..."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                />
+              </div>
+            </form>
+            <div className="flex flex-wrap justify-center gap-2">
+              <button
+                onClick={() => handleCategoryChange("")}
+                className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
+                  selectedCategory === ""
+                    ? "bg-blue-600 text-white"
+                    : "bg-gray-200 text-gray-700 hover:bg-gray-300"
+                }`}
+              >
+                Todos
+              </button>
+              {categories.map((category) => (
+                <button
+                  key={category.id}
+                  onClick={() => handleCategoryChange(category.name)}
+                  className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
+                    selectedCategory === category.name
+                      ? "bg-blue-600 text-white"
+                      : "bg-gray-200 text-gray-700 hover:bg-gray-300"
+                  }`}
+                >
+                  {category.name}
+                </button>
+              ))}
+            </div>
+          </div>
+          {loading && (
+            <div className="flex justify-center items-center py-12">
+              <div className="spinner"></div>
+              <span className="ml-3 text-gray-600">Carregando artigos...</span>
+            </div>
+          )}
+          {!loading && (
+            <>
+              {filteredArticles.length > 0 ? (
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
+                  {filteredArticles.map((article) => (
+                    <ArticleCard key={article.id} article={article} />
+                  ))}
+                </div>
+              ) : (
+                <div className="text-center py-12">
+                  <FunnelIcon className="h-12 w-12 text-gray-400 mx-auto mb-4" />
+                  <h3 className="text-lg font-medium text-gray-900 mb-2">
+                    Nenhum artigo encontrado
+                  </h3>
+                  <p className="text-gray-600">
+                    Tente ajustar os filtros ou termos de busca.
+                  </p>
+                </div>
+              )}
+              {totalPages > 1 && (
+                <div className="flex justify-center items-center space-x-2">
+                  <button
+                    onClick={() => setCurrentPage(Math.max(1, currentPage - 1))}
+                    disabled={currentPage === 1}
+                    className="px-4 py-2 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-md hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    Anterior
+                  </button>
+
+                  <span className="px-4 py-2 text-sm text-gray-700">
+                    Página {currentPage} de {totalPages}
+                  </span>
+
+                  <button
+                    onClick={() =>
+                      setCurrentPage(Math.min(totalPages, currentPage + 1))
+                    }
+                    disabled={currentPage === totalPages}
+                    className="px-4 py-2 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-md hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    Próxima
+                  </button>
+                </div>
+              )}
+            </>
+          )}
+        </div>
+      </section>
+      <section className="py-16 gradient-bg">
+        <div className="max-w-4xl mx-auto text-center px-4 sm:px-6 lg:px-8">
+          <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-6">
+            Precisa de Ajuda com sua Visão?
+          </h2>
+          <p className="text-xl text-gray-600 mb-8">
+            Nossa equipe de especialistas está pronta para ajudar você a
+            encontrar a solução ideal para sua saúde ocular.
+          </p>
+          <button
+            onClick={() => {
+              const message = encodeURIComponent(
+                "Olá! Gostaria de agendar uma consulta ou tirar dúvidas sobre óculos e saúde ocular."
+              );
+              const phone = "5511999999999";
+              window.open(`https://wa.me/${phone}?text=${message}`, "_blank");
+            }}
+            className="btn-whatsapp text-lg px-8 py-4"
+          >
+            <MagnifyingGlassIcon className="h-6 w-6" />
+            Agendar Consulta Gratuita
+          </button>
+        </div>
+      </section>
+    </Layout>
+  );
+};
+
+export default HomePage;
