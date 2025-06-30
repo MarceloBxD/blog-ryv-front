@@ -5,6 +5,7 @@ import Image from "next/image";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import Layout from "../../components/Layout";
+import { API_ENDPOINTS, apiRequest } from "../../config/api";
 import {
   EyeIcon,
   CalendarIcon,
@@ -23,9 +24,12 @@ interface Article {
   imageURL: string;
   category: string;
   author: string;
-  publishedAt: string;
-  viewCount: number;
+  published_at: string;
+  view_count: number;
   tags: string;
+  is_published: boolean;
+  created_at: string;
+  updated_at: string;
 }
 
 const ArticlePage: React.FC = () => {
@@ -40,19 +44,20 @@ const ArticlePage: React.FC = () => {
     setError(null);
 
     try {
-      const response = await fetch(
-        `http://localhost:8080/api/articles/${slug}`
-      );
+      const data = await apiRequest(API_ENDPOINTS.ARTICLE_BY_SLUG(slug));
+      console.log("Dados do artigo recebidos:", data);
 
-      if (!response.ok) {
-        throw new Error("Artigo não encontrado");
+      // Verificar se o artigo está publicado
+      if (data && !data.is_published) {
+        throw new Error("Este artigo ainda não foi publicado");
       }
 
-      const data = await response.json();
       setArticle(data);
     } catch (error) {
       console.error("Erro ao carregar artigo:", error);
-      setError("Artigo não encontrado");
+      setError(
+        error instanceof Error ? error.message : "Erro ao carregar artigo"
+      );
     } finally {
       setLoading(false);
     }
@@ -213,7 +218,7 @@ const ArticlePage: React.FC = () => {
         />
         <meta
           property="article:published_time"
-          content={article?.publishedAt}
+          content={article?.published_at}
         />
         <meta property="article:author" content={article?.author} />
         <meta property="article:section" content={article?.category} />
@@ -281,11 +286,11 @@ const ArticlePage: React.FC = () => {
                 </div>
                 <div className="flex items-center">
                   <CalendarIcon className="h-4 w-4 mr-2" />
-                  <span>{formatDate(article.publishedAt)}</span>
+                  <span>{formatDate(article.published_at)}</span>
                 </div>
                 <div className="flex items-center">
                   <EyeIcon className="h-4 w-4 mr-2" />
-                  <span>{article.viewCount} visualizações</span>
+                  <span>{article.view_count} visualizações</span>
                 </div>
               </div>
 

@@ -31,3 +31,27 @@ export const getAuthHeaders = () => {
     Authorization: token ? `Bearer ${token}` : "",
   };
 };
+
+// Função para fazer requisições com tratamento de erro
+export const apiRequest = async (url: string, options?: RequestInit) => {
+  try {
+    const response = await fetch(url, options);
+
+    if (!response.ok) {
+      if (response.status === 404) {
+        throw new Error("Recurso não encontrado");
+      } else if (response.status === 401) {
+        throw new Error("Não autorizado");
+      } else if (response.status === 403) {
+        throw new Error("Acesso negado");
+      } else {
+        throw new Error(`Erro ${response.status}: ${response.statusText}`);
+      }
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error("Erro na requisição API:", error);
+    throw error;
+  }
+};
