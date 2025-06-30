@@ -55,10 +55,10 @@ export default function Document() {
         />
 
         {/* Favicon e Ícones */}
-        <link rel="icon" href="/favicon.ico" />
-        <link rel="apple-touch-icon" sizes="180x180" href="/logo-ryv.webp" />
-        <link rel="icon" type="image/png" sizes="32x32" href="/logo-ryv.webp" />
-        <link rel="icon" type="image/png" sizes="16x16" href="/logo-ryv.webp" />
+        <link rel="icon" href="/mental.webp" />
+        <link rel="apple-touch-icon" sizes="180x180" href="/mental.webp" />
+        <link rel="icon" type="image/webp" sizes="32x32" href="/mental.webp" />
+        <link rel="icon" type="image/webp" sizes="16x16" href="/mental.webp" />
 
         {/* Canonical URL */}
         <link rel="canonical" href="https://ryv.com.br/" />
