@@ -4,9 +4,9 @@ import {
   FireIcon,
   StarIcon,
   BookOpenIcon,
-  HeartIcon,
-  ShareIcon,
-  EyeIcon,
+  // HeartIcon,
+  // ShareIcon,
+  // EyeIcon,
 } from "@heroicons/react/24/outline";
 
 interface UserStats {
@@ -33,7 +33,7 @@ const Gamification: React.FC = () => {
   useEffect(() => {
     loadUserStats();
     checkForAchievements();
-  }, []);
+  }, [checkForAchievements]);
 
   const loadUserStats = () => {
     const savedStats = localStorage.getItem("user-stats");

@@ -11,6 +11,8 @@ import CookieConsent from "./CookieConsent";
 import DailyRecommendation from "./DailyRecommendation";
 import Gamification from "./Gamification";
 import { BannerAd } from "./GoogleAds";
+import Image from "next/image";
+import Script from "next/script";
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -82,11 +84,8 @@ const Layout: React.FC<LayoutProps> = ({
         ></script>
 
         {/* Google Analytics */}
-        <script
-          async
-          src="https://www.googletagmanager.com/gtag/js?id=GA_MEASUREMENT_ID"
-        ></script>
-        <script
+        <Script src="https://www.googletagmanager.com/gtag/js?id=GA_MEASUREMENT_ID"></Script>
+        <Script
           dangerouslySetInnerHTML={{
             __html: `
               window.dataLayer = window.dataLayer || [];
@@ -106,7 +105,12 @@ const Layout: React.FC<LayoutProps> = ({
               {/* Logo */}
               <div className="flex-shrink-0">
                 <Link href="/" className="flex items-center">
-                  <img src="/logo-ryv.webp" alt="RYV" className="h-8 w-auto" />
+                  <Image
+                    src="/logo-ryv.webp"
+                    alt="RYV"
+                    width={32}
+                    height={32}
+                  />
                   <span className="ml-2 text-xl font-bold text-ryv-dark">
                     RYV
                   </span>
@@ -202,7 +206,12 @@ const Layout: React.FC<LayoutProps> = ({
               {/* Brand */}
               <div className="col-span-1 md:col-span-2">
                 <div className="flex items-center mb-4">
-                  <img src="/logo-ryv.webp" alt="RYV" className="h-8 w-auto" />
+                  <Image
+                    src="/logo-ryv.webp"
+                    alt="RYV"
+                    width={32}
+                    height={32}
+                  />
                   <span className="ml-2 text-xl font-bold">RYV</span>
                 </div>
                 <p className="text-ryv-secondary mb-4 max-w-md">
