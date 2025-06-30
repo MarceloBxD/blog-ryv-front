@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useRouter } from "next/router";
 import ProtectedRoute from "../../../../components/ProtectedRoute";
 import AdminLayout from "../../../../components/AdminLayout";
@@ -37,13 +37,6 @@ export default function EditArticle() {
     imageURL: "",
   });
 
-  useEffect(() => {
-    if (id) {
-      fetchCategories();
-      fetchArticle();
-    }
-  }, [id]);
-
   const fetchCategories = async () => {
     try {
       const response = await fetch(
@@ -60,7 +53,7 @@ export default function EditArticle() {
     }
   };
 
-  const fetchArticle = async () => {
+  const fetchArticle = useCallback(async () => {
     try {
       const token = localStorage.getItem("adminToken");
       const response = await fetch(`http://localhost:3001/api/articles/${id}`, {
@@ -92,7 +85,14 @@ export default function EditArticle() {
     } finally {
       setArticleLoading(false);
     }
-  };
+  }, [id, router]);
+
+  useEffect(() => {
+    if (id) {
+      fetchCategories();
+      fetchArticle();
+    }
+  }, [id, fetchArticle]);
 
   const generateSlug = (title: string) => {
     return title

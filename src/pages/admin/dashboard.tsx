@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import Link from "next/link";
 import ProtectedRoute from "../../components/ProtectedRoute";
 import AdminLayout from "../../components/AdminLayout";
 
@@ -198,12 +199,12 @@ export default function Dashboard() {
                 </ul>
               </div>
               <div className="mt-6">
-                <a
+                <Link
                   href="/admin/articles"
                   className="w-full flex justify-center items-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50"
                 >
                   Ver todos os artigos
-                </a>
+                </Link>
               </div>
             </div>
           </div>
@@ -239,12 +240,12 @@ export default function Dashboard() {
                 </ul>
               </div>
               <div className="mt-6">
-                <a
+                <Link
                   href="/admin/whatsapp"
                   className="w-full flex justify-center items-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50"
                 >
                   Ver todos os contatos
-                </a>
+                </Link>
               </div>
             </div>
           </div>

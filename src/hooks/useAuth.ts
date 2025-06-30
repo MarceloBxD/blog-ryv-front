@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useRouter } from "next/router";
 
 interface User {
@@ -12,6 +12,13 @@ export function useAuth() {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
   const router = useRouter();
+
+  const logout = useCallback(() => {
+    localStorage.removeItem("adminToken");
+    localStorage.removeItem("adminUser");
+    setUser(null);
+    router.push("/admin/login");
+  }, [router]);
 
   useEffect(() => {
     const token = localStorage.getItem("adminToken");
@@ -35,14 +42,7 @@ export function useAuth() {
       }
     }
     setLoading(false);
-  }, [router.pathname]);
-
-  const logout = () => {
-    localStorage.removeItem("adminToken");
-    localStorage.removeItem("adminUser");
-    setUser(null);
-    router.push("/admin/login");
-  };
+  }, [router.pathname, logout, router]);
 
   const isAuthenticated = !!user;
 
