@@ -1,4 +1,5 @@
 import React, { useEffect } from "react";
+import { ADS_CONFIG } from "../config/ads";
 
 interface GoogleAdsProps {
   adSlot: string;
@@ -20,10 +21,10 @@ const GoogleAds: React.FC<GoogleAdsProps> = ({
     // Carregar Google AdSense
     if (
       typeof window !== "undefined" &&
-      (window as WindowWithAdsbygoogle).adsbygoogle
+      Array.isArray((window as WindowWithAdsbygoogle).adsbygoogle)
     ) {
       try {
-        (window as WindowWithAdsbygoogle).adsbygoogle.push({});
+        (window as WindowWithAdsbygoogle).adsbygoogle!.push({});
       } catch (error) {
         console.error("Erro ao carregar anúncio:", error);
       }
@@ -62,7 +63,7 @@ const GoogleAds: React.FC<GoogleAdsProps> = ({
       <ins
         className="adsbygoogle"
         style={{ display: "block" }}
-        data-ad-client="ca-pub-YOUR_PUBLISHER_ID" // Substitua pelo seu ID
+        data-ad-client={ADS_CONFIG.PUBLISHER_ID}
         data-ad-slot={adSlot}
         data-ad-format="auto"
         data-full-width-responsive="true"
