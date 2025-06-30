@@ -23,18 +23,18 @@ interface ArticleCardProps {
 }
 
 const ArticleCard: React.FC<ArticleCardProps> = ({ article }) => {
-  const getCategoryColor = (category: string) => {
+  const getCategoryClass = (category: string) => {
     switch (category.toLowerCase()) {
       case "saúde mental":
-        return "bg-green-100 text-green-800";
+        return "ryv-category-badge ryv-category-saude-mental";
       case "ótica":
-        return "bg-blue-100 text-blue-800";
+        return "ryv-category-badge ryv-category-otica";
       case "optometria":
-        return "bg-purple-100 text-purple-800";
+        return "ryv-category-badge ryv-category-optometria";
       case "dicas de saúde":
-        return "bg-yellow-100 text-yellow-800";
+        return "ryv-category-badge ryv-category-dicas";
       default:
-        return "bg-gray-100 text-gray-800";
+        return "ryv-category-badge bg-ryv-secondary text-ryv-dark";
     }
   };
 
@@ -58,13 +58,9 @@ const ArticleCard: React.FC<ArticleCardProps> = ({ article }) => {
           fill
           className="object-cover group-hover:scale-105 transition-transform duration-300"
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-t from-ryv-dark/50 to-transparent" />
         <div className="absolute top-4 left-4">
-          <span
-            className={`px-3 py-1 rounded-full text-xs font-medium ${getCategoryColor(
-              article.category
-            )}`}
-          >
+          <span className={getCategoryClass(article.category)}>
             {article.category}
           </span>
         </div>
@@ -72,14 +68,16 @@ const ArticleCard: React.FC<ArticleCardProps> = ({ article }) => {
 
       {/* Content */}
       <div className="p-6">
-        <h3 className="text-xl font-bold text-gray-900 mb-3 group-hover:text-blue-600 transition-colors">
+        <h3 className="text-xl font-bold text-ryv-dark mb-3 group-hover:text-ryv-primary transition-colors">
           <Link href={`/artigo/${article.slug}`}>{article.title}</Link>
         </h3>
 
-        <p className="text-gray-600 mb-4 line-clamp-3">{article.excerpt}</p>
+        <p className="text-ryv-dark-light mb-4 line-clamp-3">
+          {article.excerpt}
+        </p>
 
         {/* Meta Information */}
-        <div className="flex items-center justify-between text-sm text-gray-500">
+        <div className="flex items-center justify-between text-sm text-ryv-dark-lighter">
           <div className="flex items-center space-x-4">
             <div className="flex items-center">
               <UserIcon className="h-4 w-4 mr-1" />
@@ -105,7 +103,7 @@ const ArticleCard: React.FC<ArticleCardProps> = ({ article }) => {
               .map((tag, index) => (
                 <span
                   key={index}
-                  className="px-2 py-1 bg-gray-100 text-gray-600 text-xs rounded-md"
+                  className="px-2 py-1 bg-ryv-secondary text-ryv-dark text-xs rounded-md"
                 >
                   {tag.trim()}
                 </span>
@@ -117,7 +115,7 @@ const ArticleCard: React.FC<ArticleCardProps> = ({ article }) => {
         <div className="mt-6">
           <Link
             href={`/artigo/${article.slug}`}
-            className="inline-flex items-center text-blue-600 hover:text-blue-800 font-medium transition-colors"
+            className="inline-flex items-center text-ryv-primary hover:text-ryv-primary-dark font-medium transition-colors"
           >
             Ler mais
             <svg

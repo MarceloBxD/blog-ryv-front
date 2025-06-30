@@ -2,7 +2,11 @@ import React, { useState, useEffect, useCallback } from "react";
 import Layout from "../components/Layout";
 import HeroSection from "../components/HeroSection";
 import ArticleCard from "../components/ArticleCard";
-import { MagnifyingGlassIcon, FunnelIcon } from "@heroicons/react/24/outline";
+import {
+  MagnifyingGlassIcon,
+  FunnelIcon,
+  ChatBubbleLeftRightIcon,
+} from "@heroicons/react/24/outline";
 
 interface Article {
   id: number;
@@ -103,28 +107,29 @@ const HomePage: React.FC = () => {
   return (
     <Layout>
       <HeroSection />
-      <section id="artigos" className="py-16 bg-white">
+      <section id="artigos" className="py-16 ryv-section">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           {/* Section Header */}
           <div className="text-center mb-12">
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
-              Artigos Especializados
+            <h2 className="text-3xl md:text-4xl font-bold text-ryv-dark mb-4">
+              Histórias que Conectam
             </h2>
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-              Conteúdo exclusivo sobre saúde mental, ótica e optometria. Aprenda
-              como cuidar da sua visão e bem-estar.
+            <p className="text-xl text-ryv-dark-light max-w-3xl mx-auto">
+              Conteúdo exclusivo sobre como saúde mental e visão se conectam.
+              Aprenda como cuidar da sua visão pode transformar seu bem-estar
+              emocional.
             </p>
           </div>
           <div className="mb-8 space-y-4">
             <form onSubmit={handleSearch} className="max-w-md mx-auto">
               <div className="relative">
-                <MagnifyingGlassIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
+                <MagnifyingGlassIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-ryv-dark-lighter" />
                 <input
                   type="text"
-                  placeholder="Buscar artigos..."
+                  placeholder="Encontre o que você procura..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full pl-10 pr-4 py-3 border border-ryv-secondary rounded-lg focus:ring-2 focus:ring-ryv-primary focus:border-transparent"
                 />
               </div>
             </form>
@@ -133,11 +138,11 @@ const HomePage: React.FC = () => {
                 onClick={() => handleCategoryChange("")}
                 className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
                   selectedCategory === ""
-                    ? "bg-blue-600 text-white"
-                    : "bg-gray-200 text-gray-700 hover:bg-gray-300"
+                    ? "bg-ryv-primary text-ryv-white"
+                    : "bg-ryv-secondary text-ryv-dark hover:bg-ryv-secondary-dark"
                 }`}
               >
-                Todos
+                Todas as Histórias
               </button>
               {categories.map((category) => (
                 <button
@@ -145,8 +150,8 @@ const HomePage: React.FC = () => {
                   onClick={() => handleCategoryChange(category.name)}
                   className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
                     selectedCategory === category.name
-                      ? "bg-blue-600 text-white"
-                      : "bg-gray-200 text-gray-700 hover:bg-gray-300"
+                      ? "bg-ryv-primary text-ryv-white"
+                      : "bg-ryv-secondary text-ryv-dark hover:bg-ryv-secondary-dark"
                   }`}
                 >
                   {category.name}
@@ -157,7 +162,9 @@ const HomePage: React.FC = () => {
           {loading && (
             <div className="flex justify-center items-center py-12">
               <div className="spinner"></div>
-              <span className="ml-3 text-gray-600">Carregando artigos...</span>
+              <span className="ml-3 text-ryv-dark-light">
+                Conectando histórias...
+              </span>
             </div>
           )}
           {!loading && (
@@ -170,11 +177,11 @@ const HomePage: React.FC = () => {
                 </div>
               ) : (
                 <div className="text-center py-12">
-                  <FunnelIcon className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-                  <h3 className="text-lg font-medium text-gray-900 mb-2">
-                    Nenhum artigo encontrado
+                  <FunnelIcon className="h-12 w-12 text-ryv-dark-lighter mx-auto mb-4" />
+                  <h3 className="text-lg font-medium text-ryv-dark mb-2">
+                    Nenhuma história encontrada
                   </h3>
-                  <p className="text-gray-600">
+                  <p className="text-ryv-dark-light">
                     Tente ajustar os filtros ou termos de busca.
                   </p>
                 </div>
@@ -184,12 +191,12 @@ const HomePage: React.FC = () => {
                   <button
                     onClick={() => setCurrentPage(Math.max(1, currentPage - 1))}
                     disabled={currentPage === 1}
-                    className="px-4 py-2 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-md hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="px-4 py-2 text-sm font-medium text-ryv-dark-lighter bg-ryv-white border border-ryv-secondary rounded-md hover:bg-ryv-secondary disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     Anterior
                   </button>
 
-                  <span className="px-4 py-2 text-sm text-gray-700">
+                  <span className="px-4 py-2 text-sm text-ryv-dark">
                     Página {currentPage} de {totalPages}
                   </span>
 
@@ -198,7 +205,7 @@ const HomePage: React.FC = () => {
                       setCurrentPage(Math.min(totalPages, currentPage + 1))
                     }
                     disabled={currentPage === totalPages}
-                    className="px-4 py-2 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-md hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="px-4 py-2 text-sm font-medium text-ryv-dark-lighter bg-ryv-white border border-ryv-secondary rounded-md hover:bg-ryv-secondary disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     Próxima
                   </button>
@@ -210,25 +217,25 @@ const HomePage: React.FC = () => {
       </section>
       <section className="py-16 gradient-bg">
         <div className="max-w-4xl mx-auto text-center px-4 sm:px-6 lg:px-8">
-          <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-6">
-            Precisa de Ajuda com sua Visão?
+          <h2 className="text-3xl md:text-4xl font-bold text-ryv-dark mb-6">
+            Pronto para Conectar?
           </h2>
-          <p className="text-xl text-gray-600 mb-8">
-            Nossa equipe de especialistas está pronta para ajudar você a
-            encontrar a solução ideal para sua saúde ocular.
+          <p className="text-xl text-ryv-dark-light mb-8">
+            Nossa equipe está pronta para conectar você com os melhores cuidados
+            para sua visão e bem-estar mental.
           </p>
           <button
             onClick={() => {
               const message = encodeURIComponent(
-                "Olá! Gostaria de agendar uma consulta ou tirar dúvidas sobre óculos e saúde ocular."
+                "Olá! Vi o site da RYV e gostaria de saber mais sobre como vocês podem me ajudar com minha saúde ocular e bem-estar. Podemos conversar?"
               );
               const phone = "5511999999999";
               window.open(`https://wa.me/${phone}?text=${message}`, "_blank");
             }}
             className="btn-whatsapp text-lg px-8 py-4"
           >
-            <MagnifyingGlassIcon className="h-6 w-6" />
-            Agendar Consulta Gratuita
+            <ChatBubbleLeftRightIcon className="h-6 w-6" />
+            Vamos Conversar?
           </button>
         </div>
       </section>

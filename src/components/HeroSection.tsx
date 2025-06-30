@@ -1,16 +1,20 @@
 import React from "react";
-import { EyeIcon, HeartIcon, SparklesIcon } from "@heroicons/react/24/outline";
+import {
+  HeartIcon,
+  SparklesIcon,
+  ChatBubbleLeftRightIcon,
+} from "@heroicons/react/24/outline";
 
 const HeroSection: React.FC = () => {
   const handleWhatsAppClick = async () => {
     const message = encodeURIComponent(
-      "Olá! Gostaria de agendar uma consulta ou tirar dúvidas sobre óculos e saúde ocular."
+      "Olá! Vi o site da RYV e fiquei impressionado com a conexão que vocês fazem entre saúde mental e visão. Gostaria de saber mais sobre como vocês podem me ajudar!"
     );
     const phone = "5511999999999"; // Substitua pelo número real
 
     // Registrar contato no banco de dados
     try {
-      await fetch("http://localhost:8080/api/whatsapp/contact", {
+      await fetch("http://localhost:3001/api/whatsapp/contact", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -34,30 +38,31 @@ const HeroSection: React.FC = () => {
     <section className="gradient-bg relative overflow-hidden">
       {/* Background Pattern */}
       <div className="absolute inset-0 opacity-10">
-        <div className="absolute top-0 left-0 w-72 h-72 bg-blue-400 rounded-full mix-blend-multiply filter blur-xl animate-pulse"></div>
-        <div className="absolute top-0 right-0 w-72 h-72 bg-purple-400 rounded-full mix-blend-multiply filter blur-xl animate-pulse animation-delay-2000"></div>
-        <div className="absolute bottom-0 left-1/2 w-72 h-72 bg-pink-400 rounded-full mix-blend-multiply filter blur-xl animate-pulse animation-delay-4000"></div>
+        <div className="absolute top-0 left-0 w-72 h-72 bg-ryv-primary rounded-full mix-blend-multiply filter blur-xl animate-pulse"></div>
+        <div className="absolute top-0 right-0 w-72 h-72 bg-ryv-secondary rounded-full mix-blend-multiply filter blur-xl animate-pulse animation-delay-2000"></div>
+        <div className="absolute bottom-0 left-1/2 w-72 h-72 bg-ryv-primary-light rounded-full mix-blend-multiply filter blur-xl animate-pulse animation-delay-4000"></div>
       </div>
 
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
         <div className="text-center">
           {/* Badge */}
-          <div className="inline-flex items-center px-4 py-2 bg-white/80 backdrop-blur-sm rounded-full text-sm font-medium text-gray-700 mb-8">
-            <SparklesIcon className="h-4 w-4 mr-2 text-blue-600" />
-            Especialistas em Saúde Ocular e Mental
+          <div className="inline-flex items-center px-4 py-2 bg-ryv-white/80 backdrop-blur-sm rounded-full text-sm font-medium text-ryv-dark mb-8">
+            <SparklesIcon className="h-4 w-4 mr-2 text-ryv-primary" />
+            Conectando Saúde Mental e Visão
           </div>
 
           {/* Main Heading */}
-          <h1 className="text-4xl md:text-6xl font-bold text-gray-900 mb-6">
-            Cuidando da sua <span className="text-gradient">Visão</span>
-            <br />e <span className="text-gradient">Bem-estar</span>
+          <h1 className="text-4xl md:text-6xl font-bold text-ryv-dark mb-6">
+            Sua <span className="text-gradient">Visão</span> Conectada
+            <br />
+            ao seu <span className="text-gradient">Bem-estar</span>
           </h1>
 
           {/* Subtitle */}
-          <p className="text-xl text-gray-600 mb-8 max-w-3xl mx-auto leading-relaxed">
-            Descubra como a saúde ocular está diretamente conectada ao seu
-            bem-estar mental. Artigos especializados, dicas práticas e soluções
-            personalizadas para cuidar da sua visão.
+          <p className="text-xl text-ryv-dark-light mb-8 max-w-3xl mx-auto leading-relaxed">
+            Descubra como cuidar da sua visão pode transformar sua saúde mental.
+            Somos especialistas em conectar esses dois mundos para uma vida mais
+            plena e conectada.
           </p>
 
           {/* CTA Buttons */}
@@ -66,28 +71,36 @@ const HeroSection: React.FC = () => {
               onClick={handleWhatsAppClick}
               className="btn-whatsapp text-lg px-8 py-4"
             >
-              <EyeIcon className="h-6 w-6" />
-              Agendar Consulta
+              <ChatBubbleLeftRightIcon className="h-6 w-6" />
+              Vamos Conversar?
             </button>
             <a href="#artigos" className="btn-secondary text-lg px-8 py-4">
               <HeartIcon className="h-6 w-6 mr-2" />
-              Ler Artigos
+              Descobrir Mais
             </a>
           </div>
 
           {/* Stats */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-2xl mx-auto">
             <div className="text-center">
-              <div className="text-3xl font-bold text-blue-600 mb-2">500+</div>
-              <div className="text-gray-600">Pacientes Atendidos</div>
+              <div className="text-3xl font-bold text-ryv-primary mb-2">
+                500+
+              </div>
+              <div className="text-ryv-dark-light">Vidas Conectadas</div>
             </div>
             <div className="text-center">
-              <div className="text-3xl font-bold text-purple-600 mb-2">50+</div>
-              <div className="text-gray-600">Artigos Publicados</div>
+              <div className="text-3xl font-bold text-ryv-primary-light mb-2">
+                50+
+              </div>
+              <div className="text-ryv-dark-light">
+                Histórias Compartilhadas
+              </div>
             </div>
             <div className="text-center">
-              <div className="text-3xl font-bold text-green-600 mb-2">98%</div>
-              <div className="text-gray-600">Satisfação</div>
+              <div className="text-3xl font-bold text-ryv-primary mb-2">
+                98%
+              </div>
+              <div className="text-ryv-dark-light">Confiança</div>
             </div>
           </div>
         </div>
@@ -97,7 +110,7 @@ const HeroSection: React.FC = () => {
       <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2">
         <div className="animate-bounce">
           <svg
-            className="h-6 w-6 text-gray-400"
+            className="h-6 w-6 text-ryv-dark-lighter"
             fill="none"
             stroke="currentColor"
             viewBox="0 0 24 24"
