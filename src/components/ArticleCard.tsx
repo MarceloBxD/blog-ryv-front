@@ -29,10 +29,18 @@ interface ArticleCardProps {
   article: Article;
 }
 
+// Tipagem para gamification no window
+interface Gamification {
+  updateStats: (action: string) => void;
+}
+interface WindowWithGamification extends Window {
+  gamification?: Gamification;
+}
+
 const ArticleCard: React.FC<ArticleCardProps> = ({ article }) => {
   const handleArticleClick = () => {
     // Atualizar estatísticas de gamificação
-    const gamification = (window as any).gamification;
+    const gamification = (window as WindowWithGamification).gamification;
     if (gamification && gamification.updateStats) {
       gamification.updateStats("read_article");
     }
@@ -52,7 +60,7 @@ const ArticleCard: React.FC<ArticleCardProps> = ({ article }) => {
     e.stopPropagation();
 
     // Atualizar estatísticas de gamificação
-    const gamification = (window as any).gamification;
+    const gamification = (window as WindowWithGamification).gamification;
     if (gamification && gamification.updateStats) {
       gamification.updateStats("like_article");
     }
@@ -72,7 +80,7 @@ const ArticleCard: React.FC<ArticleCardProps> = ({ article }) => {
     e.stopPropagation();
 
     // Atualizar estatísticas de gamificação
-    const gamification = (window as any).gamification;
+    const gamification = (window as WindowWithGamification).gamification;
     if (gamification && gamification.updateStats) {
       gamification.updateStats("share_article");
     }

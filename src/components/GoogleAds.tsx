@@ -6,6 +6,11 @@ interface GoogleAdsProps {
   className?: string;
 }
 
+// Tipagem para adsbygoogle no window
+interface WindowWithAdsbygoogle extends Window {
+  adsbygoogle?: unknown[];
+}
+
 const GoogleAds: React.FC<GoogleAdsProps> = ({
   adSlot,
   adFormat,
@@ -13,9 +18,12 @@ const GoogleAds: React.FC<GoogleAdsProps> = ({
 }) => {
   useEffect(() => {
     // Carregar Google AdSense
-    if (typeof window !== "undefined" && (window as any).adsbygoogle) {
+    if (
+      typeof window !== "undefined" &&
+      (window as WindowWithAdsbygoogle).adsbygoogle
+    ) {
       try {
-        (window as any).adsbygoogle.push({});
+        (window as WindowWithAdsbygoogle).adsbygoogle.push({});
       } catch (error) {
         console.error("Erro ao carregar anúncio:", error);
       }
