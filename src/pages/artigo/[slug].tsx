@@ -40,23 +40,20 @@ const ArticlePage: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
 
   const fetchArticle = useCallback(async () => {
+    if (!slug) return;
     setLoading(true);
     setError(null);
-
     try {
-      const data = await apiRequest(API_ENDPOINTS.ARTICLE_BY_SLUG(slug));
-      console.log("Dados do artigo recebidos:", data);
-
-      // Verificar se o artigo está publicado
-      if (data && !data.is_published) {
+      const data = await apiRequest(
+        API_ENDPOINTS.ARTICLE_BY_SLUG(slug as string)
+      );
+      if (!data.is_published) {
         throw new Error("Este artigo ainda não foi publicado");
       }
-
       setArticle(data);
     } catch (error) {
-      console.error("Erro ao carregar artigo:", error);
       setError(
-        error instanceof Error ? error.message : "Erro ao carregar artigo"
+        error instanceof Error ? error.message : "Artigo não encontrado"
       );
     } finally {
       setLoading(false);
