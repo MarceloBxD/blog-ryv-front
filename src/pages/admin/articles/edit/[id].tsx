@@ -13,8 +13,10 @@ interface ArticleForm {
   slug: string;
   excerpt: string;
   content: string;
-  category_id: number;
-  status: string;
+  category: string;
+  is_published: boolean;
+  tags?: string;
+  imageURL?: string;
 }
 
 export default function EditArticle() {
@@ -29,8 +31,10 @@ export default function EditArticle() {
     slug: "",
     excerpt: "",
     content: "",
-    category_id: 0,
-    status: "draft",
+    category: "",
+    is_published: false,
+    tags: "",
+    imageURL: "",
   });
 
   useEffect(() => {
@@ -72,8 +76,10 @@ export default function EditArticle() {
           slug: article.slug,
           excerpt: article.excerpt,
           content: article.content,
-          category_id: article.category_id,
-          status: article.status,
+          category: article.category,
+          is_published: article.is_published,
+          tags: article.tags || "",
+          imageURL: article.imageURL || "",
         });
       } else {
         alert("Artigo não encontrado");
@@ -224,21 +230,21 @@ export default function EditArticle() {
                     {/* Categoria */}
                     <div>
                       <label
-                        htmlFor="category_id"
+                        htmlFor="category"
                         className="block text-sm font-medium text-gray-700"
                       >
                         Categoria
                       </label>
                       <select
-                        name="category_id"
-                        id="category_id"
+                        name="category"
+                        id="category"
                         required
                         className="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                        value={formData.category_id}
+                        value={formData.category}
                         onChange={handleChange}
                       >
                         {categories.map((category) => (
-                          <option key={category.id} value={category.id}>
+                          <option key={category.id} value={category.name}>
                             {category.name}
                           </option>
                         ))}
@@ -248,22 +254,65 @@ export default function EditArticle() {
                     {/* Status */}
                     <div>
                       <label
-                        htmlFor="status"
+                        htmlFor="is_published"
                         className="block text-sm font-medium text-gray-700"
                       >
                         Status
                       </label>
                       <select
-                        name="status"
-                        id="status"
+                        name="is_published"
+                        id="is_published"
                         required
                         className="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                        value={formData.status}
-                        onChange={handleChange}
+                        value={formData.is_published.toString()}
+                        onChange={(e) =>
+                          setFormData((prev) => ({
+                            ...prev,
+                            is_published: e.target.value === "true",
+                          }))
+                        }
                       >
-                        <option value="draft">Rascunho</option>
-                        <option value="published">Publicado</option>
+                        <option value="false">Rascunho</option>
+                        <option value="true">Publicado</option>
                       </select>
+                    </div>
+
+                    {/* Tags */}
+                    <div>
+                      <label
+                        htmlFor="tags"
+                        className="block text-sm font-medium text-gray-700"
+                      >
+                        Tags (separadas por vírgula)
+                      </label>
+                      <input
+                        type="text"
+                        name="tags"
+                        id="tags"
+                        className="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
+                        value={formData.tags}
+                        onChange={handleChange}
+                        placeholder="saúde mental, visão, bem-estar"
+                      />
+                    </div>
+
+                    {/* URL da Imagem */}
+                    <div>
+                      <label
+                        htmlFor="imageURL"
+                        className="block text-sm font-medium text-gray-700"
+                      >
+                        URL da Imagem
+                      </label>
+                      <input
+                        type="url"
+                        name="imageURL"
+                        id="imageURL"
+                        className="mt-1 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
+                        value={formData.imageURL}
+                        onChange={handleChange}
+                        placeholder="https://exemplo.com/imagem.jpg"
+                      />
                     </div>
 
                     {/* Resumo */}

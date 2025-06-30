@@ -10,7 +10,7 @@ interface DashboardStats {
     title: string;
     slug: string;
     created_at: string;
-    status: string;
+    is_published: boolean;
   }>;
   recentContacts: Array<{
     id: number;
@@ -54,10 +54,11 @@ export default function Dashboard() {
       );
 
       if (articlesResponse.ok && contactsResponse.ok) {
-        const articles = await articlesResponse.json();
+        const articlesData = await articlesResponse.json();
         const contacts = await contactsResponse.json();
 
-        // Verificar se os dados são arrays
+        // O backend retorna { articles: [...], pagination: {...} }
+        const articles = articlesData.articles || articlesData;
         const articlesArray = Array.isArray(articles) ? articles : [];
         const contactsArray = Array.isArray(contacts) ? contacts : [];
 
@@ -183,14 +184,12 @@ export default function Dashboard() {
                         <div className="flex-shrink-0">
                           <span
                             className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                              article.status === "published"
+                              article.is_published
                                 ? "bg-green-100 text-green-800"
                                 : "bg-yellow-100 text-yellow-800"
                             }`}
                           >
-                            {article.status === "published"
-                              ? "Publicado"
-                              : "Rascunho"}
+                            {article.is_published ? "Publicado" : "Rascunho"}
                           </span>
                         </div>
                       </div>

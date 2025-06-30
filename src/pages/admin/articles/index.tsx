@@ -9,11 +9,14 @@ interface Article {
   slug: string;
   excerpt: string;
   content: string;
-  category_id: number;
-  category_name: string;
-  status: string;
+  category: string;
+  is_published: boolean;
+  tags?: string;
+  imageURL?: string;
   created_at: string;
   updated_at: string;
+  published_at?: string;
+  view_count: number;
 }
 
 export default function ArticlesList() {
@@ -37,8 +40,9 @@ export default function ArticlesList() {
 
       if (response.ok) {
         const data = await response.json();
-        // Verificar se os dados são um array
-        const articlesArray = Array.isArray(data) ? data : [];
+        // O backend retorna { articles: [...], pagination: {...} }
+        const articles = data.articles || data;
+        const articlesArray = Array.isArray(articles) ? articles : [];
         setArticles(articlesArray);
       }
     } catch (error) {
@@ -144,14 +148,12 @@ export default function ArticlesList() {
                           <div className="ml-2 flex-shrink-0 flex">
                             <span
                               className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                                article.status === "published"
+                                article.is_published
                                   ? "bg-green-100 text-green-800"
                                   : "bg-yellow-100 text-yellow-800"
                               }`}
                             >
-                              {article.status === "published"
-                                ? "Publicado"
-                                : "Rascunho"}
+                              {article.is_published ? "Publicado" : "Rascunho"}
                             </span>
                           </div>
                         </div>
@@ -170,7 +172,7 @@ export default function ArticlesList() {
                                 d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"
                               />
                             </svg>
-                            {article.category_name}
+                            {article.category}
                           </div>
                         </div>
                         <div className="mt-2 flex">
