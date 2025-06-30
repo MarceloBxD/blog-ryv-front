@@ -3,7 +3,14 @@ import Link from "next/link";
 import Image from "next/image";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
-import { EyeIcon, CalendarIcon, UserIcon } from "@heroicons/react/24/outline";
+import {
+  EyeIcon,
+  CalendarIcon,
+  UserIcon,
+  HeartIcon,
+  ShareIcon,
+  BookOpenIcon,
+} from "@heroicons/react/24/outline";
 
 interface Article {
   id: number;
@@ -23,6 +30,83 @@ interface ArticleCardProps {
 }
 
 const ArticleCard: React.FC<ArticleCardProps> = ({ article }) => {
+  const handleArticleClick = () => {
+    // Atualizar estatísticas de gamificação
+    const gamification = (window as any).gamification;
+    if (gamification && gamification.updateStats) {
+      gamification.updateStats("read_article");
+    }
+
+    // Salvar no localStorage para tracking
+    const readArticles = JSON.parse(
+      localStorage.getItem("read-articles") || "[]"
+    );
+    if (!readArticles.includes(article.id)) {
+      readArticles.push(article.id);
+      localStorage.setItem("read-articles", JSON.stringify(readArticles));
+    }
+  };
+
+  const handleLike = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+
+    // Atualizar estatísticas de gamificação
+    const gamification = (window as any).gamification;
+    if (gamification && gamification.updateStats) {
+      gamification.updateStats("like_article");
+    }
+
+    // Salvar like no localStorage
+    const likedArticles = JSON.parse(
+      localStorage.getItem("liked-articles") || "[]"
+    );
+    if (!likedArticles.includes(article.id)) {
+      likedArticles.push(article.id);
+      localStorage.setItem("liked-articles", JSON.stringify(likedArticles));
+    }
+  };
+
+  const handleShare = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+
+    // Atualizar estatísticas de gamificação
+    const gamification = (window as any).gamification;
+    if (gamification && gamification.updateStats) {
+      gamification.updateStats("share_article");
+    }
+
+    // Compartilhar via Web Share API ou fallback
+    if (navigator.share) {
+      navigator.share({
+        title: article.title,
+        text: article.excerpt,
+        url: `${window.location.origin}/artigo/${article.slug}`,
+      });
+    } else {
+      // Fallback: copiar URL para clipboard
+      navigator.clipboard.writeText(
+        `${window.location.origin}/artigo/${article.slug}`
+      );
+      alert("Link copiado para a área de transferência!");
+    }
+  };
+
+  const isLiked = () => {
+    const likedArticles = JSON.parse(
+      localStorage.getItem("liked-articles") || "[]"
+    );
+    return likedArticles.includes(article.id);
+  };
+
+  const isRead = () => {
+    const readArticles = JSON.parse(
+      localStorage.getItem("read-articles") || "[]"
+    );
+    return readArticles.includes(article.id);
+  };
+
   const getCategoryClass = (category: string) => {
     switch (category.toLowerCase()) {
       case "saúde mental":
@@ -53,23 +137,36 @@ const ArticleCard: React.FC<ArticleCardProps> = ({ article }) => {
       {/* Image */}
       <div className="relative h-48 overflow-hidden">
         <Image
-          src={article.imageURL}
+          src={article.imageURL || "/mental-health-illustration.svg"}
           alt={article.title}
           fill
           className="object-cover group-hover:scale-105 transition-transform duration-300"
         />
         <div className="absolute inset-0 bg-gradient-to-t from-ryv-dark/50 to-transparent" />
+
+        {/* Category Badge */}
         <div className="absolute top-4 left-4">
           <span className={getCategoryClass(article.category)}>
             {article.category}
           </span>
         </div>
+
+        {/* Read Status */}
+        {isRead() && (
+          <div className="absolute top-4 right-4">
+            <div className="bg-ryv-primary text-ryv-white p-1 rounded-full">
+              <BookOpenIcon className="h-4 w-4" />
+            </div>
+          </div>
+        )}
       </div>
 
       {/* Content */}
       <div className="p-6">
         <h3 className="text-xl font-bold text-ryv-dark mb-3 group-hover:text-ryv-primary transition-colors">
-          <Link href={`/artigo/${article.slug}`}>{article.title}</Link>
+          <Link href={`/artigo/${article.slug}`} onClick={handleArticleClick}>
+            {article.title}
+          </Link>
         </h3>
 
         <p className="text-ryv-dark-light mb-4 line-clamp-3">
@@ -77,7 +174,7 @@ const ArticleCard: React.FC<ArticleCardProps> = ({ article }) => {
         </p>
 
         {/* Meta Information */}
-        <div className="flex items-center justify-between text-sm text-ryv-dark-lighter">
+        <div className="flex items-center justify-between text-sm text-ryv-dark-lighter mb-4">
           <div className="flex items-center space-x-4">
             <div className="flex items-center">
               <UserIcon className="h-4 w-4 mr-1" />
@@ -96,7 +193,7 @@ const ArticleCard: React.FC<ArticleCardProps> = ({ article }) => {
 
         {/* Tags */}
         {article.tags && (
-          <div className="mt-4 flex flex-wrap gap-2">
+          <div className="mb-4 flex flex-wrap gap-2">
             {article.tags
               .split(",")
               .slice(0, 3)
@@ -111,10 +208,33 @@ const ArticleCard: React.FC<ArticleCardProps> = ({ article }) => {
           </div>
         )}
 
-        {/* Read More Button */}
-        <div className="mt-6">
+        {/* Action Buttons */}
+        <div className="flex items-center justify-between pt-4 border-t border-ryv-secondary">
+          <div className="flex items-center space-x-4">
+            <button
+              onClick={handleLike}
+              className={`flex items-center space-x-1 text-sm transition-colors ${
+                isLiked()
+                  ? "text-red-500"
+                  : "text-ryv-dark-lighter hover:text-red-500"
+              }`}
+            >
+              <HeartIcon className="h-4 w-4" />
+              <span>{isLiked() ? "Curtido" : "Curtir"}</span>
+            </button>
+
+            <button
+              onClick={handleShare}
+              className="flex items-center space-x-1 text-sm text-ryv-dark-lighter hover:text-ryv-primary transition-colors"
+            >
+              <ShareIcon className="h-4 w-4" />
+              <span>Compartilhar</span>
+            </button>
+          </div>
+
           <Link
             href={`/artigo/${article.slug}`}
+            onClick={handleArticleClick}
             className="inline-flex items-center text-ryv-primary hover:text-ryv-primary-dark font-medium transition-colors"
           >
             Ler mais

@@ -103,6 +103,13 @@ export default function Document() {
             }),
           }}
         />
+
+        {/* Google AdSense */}
+        <script
+          async
+          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8505875581417099"
+          crossOrigin="anonymous"
+        ></script>
       </Head>
       <body className="antialiased">
         <Main />

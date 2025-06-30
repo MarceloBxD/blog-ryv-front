@@ -1,8 +1,16 @@
-import React, { useState } from "react";
+import React from "react";
 import Head from "next/head";
 import Link from "next/link";
-import Image from "next/image";
-import { PhoneIcon, Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline";
+import { useRouter } from "next/router";
+import {
+  Bars3Icon,
+  XMarkIcon,
+  ChatBubbleLeftRightIcon,
+} from "@heroicons/react/24/outline";
+import CookieConsent from "./CookieConsent";
+import DailyRecommendation from "./DailyRecommendation";
+import Gamification from "./Gamification";
+import { BannerAd } from "./GoogleAds";
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -15,13 +23,21 @@ const Layout: React.FC<LayoutProps> = ({
   title = "RYV - Conectando Saúde Mental e Visão",
   description = "Somos especialistas em saúde mental, ótica e optometria. Conectamos você com os melhores cuidados para sua visão e bem-estar emocional.",
 }) => {
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const router = useRouter();
+  const [mobileMenuOpen, setMobileMenuOpen] = React.useState(false);
+
+  const navigation = [
+    { name: "Início", href: "/" },
+    { name: "Histórias", href: "/#artigos" },
+    { name: "Sobre", href: "/#sobre" },
+    { name: "Contato", href: "/#contato" },
+  ];
 
   const handleWhatsAppClick = async () => {
     const message = encodeURIComponent(
       "Olá! Vi o site da RYV e gostaria de saber mais sobre como vocês podem me ajudar com minha saúde ocular e bem-estar. Podemos conversar?"
     );
-    const phone = "5511999999999"; // Substitua pelo número real
+    const phone = "5511999999999";
 
     // Registrar contato no banco de dados
     try {
@@ -33,7 +49,7 @@ const Layout: React.FC<LayoutProps> = ({
         body: JSON.stringify({
           name: "Visitante do Site",
           phone: "Não informado",
-          message: "Cliqueu no botão WhatsApp",
+          message: "Cliqueu no botão WhatsApp do Header",
           source: window.location.href,
         }),
       });
@@ -41,104 +57,99 @@ const Layout: React.FC<LayoutProps> = ({
       console.log("Erro ao registrar contato:", error);
     }
 
-    // Abrir WhatsApp
     window.open(`https://wa.me/${phone}?text=${message}`, "_blank");
-  };
-
-  const toggleMobileMenu = () => {
-    setIsMobileMenuOpen(!isMobileMenuOpen);
   };
 
   return (
     <>
       <Head>
-        <title>{title}</title>
-        <meta name="description" content={description} />
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <link rel="icon" href="/favicon.ico" />
-        <meta property="og:title" content={title} />
-        <meta property="og:description" content={description} />
-        <meta property="og:type" content="website" />
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link
-          rel="preconnect"
-          href="https://fonts.gstatic.com"
-          crossOrigin="anonymous"
+        <title>
+          {title ? `${title} | RYV` : "RYV - Conectando Saúde Mental e Visão"}
+        </title>
+        <meta
+          name="description"
+          content={
+            description ||
+            "Descubra como cuidar da sua visão pode transformar sua saúde mental. Blog da RYV com conteúdo exclusivo sobre óptica e bem-estar."
+          }
         />
-        <link
-          href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
-          rel="stylesheet"
+
+        {/* Google AdSense */}
+        <script
+          async
+          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-YOUR_PUBLISHER_ID"
+          crossOrigin="anonymous"
+        ></script>
+
+        {/* Google Analytics */}
+        <script
+          async
+          src="https://www.googletagmanager.com/gtag/js?id=GA_MEASUREMENT_ID"
+        ></script>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              window.dataLayer = window.dataLayer || [];
+              function gtag(){dataLayer.push(arguments);}
+              gtag('js', new Date());
+              gtag('config', 'GA_MEASUREMENT_ID');
+            `,
+          }}
         />
       </Head>
 
-      <div className="min-h-screen flex flex-col">
+      <div className="min-h-screen bg-ryv-white">
         {/* Header */}
-        <header className="ryv-header shadow-sm sticky top-0 z-50">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <header className="bg-ryv-white shadow-sm border-b border-ryv-secondary sticky top-0 z-30">
+          <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="flex justify-between items-center h-16">
               {/* Logo */}
-              <div className="flex items-center">
-                <Link href="/" className="flex items-center fade-in">
-                  <Image
-                    src="/logo-ryv.webp"
-                    alt="RYV - Saúde & Visão"
-                    width={40}
-                    height={40}
-                    className="h-10 w-auto"
-                  />
-                  <div className="ml-3">
-                    <h1 className="text-xl font-bold text-ryv-dark">RYV</h1>
-                    <p className="text-sm text-ryv-dark-lighter mobile-hidden">
-                      Conectando Saúde & Visão
-                    </p>
-                  </div>
+              <div className="flex-shrink-0">
+                <Link href="/" className="flex items-center">
+                  <img src="/logo-ryv.webp" alt="RYV" className="h-8 w-auto" />
+                  <span className="ml-2 text-xl font-bold text-ryv-dark">
+                    RYV
+                  </span>
                 </Link>
               </div>
 
               {/* Desktop Navigation */}
-              <nav className="hidden md:flex space-x-8">
-                <Link href="/" className="ryv-nav-link fade-in stagger-1">
-                  Início
-                </Link>
-                <Link
-                  href="/?category=saude-mental"
-                  className="ryv-nav-link fade-in stagger-2"
-                >
-                  Saúde Mental
-                </Link>
-                <Link
-                  href="/?category=otica"
-                  className="ryv-nav-link fade-in stagger-3"
-                >
-                  Ótica
-                </Link>
-                <Link
-                  href="/?category=optometria"
-                  className="ryv-nav-link fade-in stagger-4"
-                >
-                  Optometria
-                </Link>
-              </nav>
+              <div className="hidden md:block">
+                <div className="ml-10 flex items-baseline space-x-8">
+                  {navigation.map((item) => (
+                    <Link
+                      key={item.name}
+                      href={item.href}
+                      className={`px-3 py-2 rounded-md text-sm font-medium transition-colors hover:text-ryv-primary ${
+                        router.pathname === item.href
+                          ? "text-ryv-primary"
+                          : "text-ryv-dark hover:text-ryv-primary"
+                      }`}
+                    >
+                      {item.name}
+                    </Link>
+                  ))}
+                </div>
+              </div>
 
-              {/* Desktop Contact Button */}
-              <div className="hidden md:flex items-center space-x-4">
+              {/* CTA Button */}
+              <div className="hidden md:block">
                 <button
                   onClick={handleWhatsAppClick}
-                  className="btn-whatsapp fade-in stagger-5"
+                  className="btn-whatsapp px-4 py-2 text-sm"
                 >
-                  <PhoneIcon className="h-5 w-5" />
-                  Vamos Conversar?
+                  <ChatBubbleLeftRightIcon className="h-4 w-4" />
+                  Conectar
                 </button>
               </div>
 
               {/* Mobile menu button */}
               <div className="md:hidden">
                 <button
-                  onClick={toggleMobileMenu}
-                  className="text-ryv-dark hover:text-ryv-primary transition-colors duration-300"
-                  aria-label="Toggle menu"
+                  onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+                  className="text-ryv-dark hover:text-ryv-primary transition-colors"
                 >
-                  {isMobileMenuOpen ? (
+                  {mobileMenuOpen ? (
                     <XMarkIcon className="h-6 w-6" />
                   ) : (
                     <Bars3Icon className="h-6 w-6" />
@@ -146,161 +157,132 @@ const Layout: React.FC<LayoutProps> = ({
                 </button>
               </div>
             </div>
+          </nav>
 
-            {/* Mobile Navigation */}
-            {isMobileMenuOpen && (
-              <div className="md:hidden fade-in-down">
-                <div className="px-2 pt-2 pb-3 space-y-1 bg-ryv-white border-t border-ryv-secondary">
+          {/* Mobile Navigation */}
+          {mobileMenuOpen && (
+            <div className="md:hidden bg-ryv-white border-t border-ryv-secondary">
+              <div className="px-2 pt-2 pb-3 space-y-1">
+                {navigation.map((item) => (
                   <Link
-                    href="/"
-                    className="block px-3 py-2 text-ryv-dark hover:text-ryv-primary hover:bg-ryv-secondary rounded-md transition-all duration-300"
-                    onClick={() => setIsMobileMenuOpen(false)}
+                    key={item.name}
+                    href={item.href}
+                    className={`block px-3 py-2 rounded-md text-base font-medium transition-colors ${
+                      router.pathname === item.href
+                        ? "text-ryv-primary bg-ryv-secondary"
+                        : "text-ryv-dark hover:text-ryv-primary hover:bg-ryv-secondary"
+                    }`}
+                    onClick={() => setMobileMenuOpen(false)}
                   >
-                    Início
+                    {item.name}
                   </Link>
-                  <Link
-                    href="/?category=saude-mental"
-                    className="block px-3 py-2 text-ryv-dark hover:text-ryv-primary hover:bg-ryv-secondary rounded-md transition-all duration-300"
-                    onClick={() => setIsMobileMenuOpen(false)}
-                  >
-                    Saúde Mental
-                  </Link>
-                  <Link
-                    href="/?category=otica"
-                    className="block px-3 py-2 text-ryv-dark hover:text-ryv-primary hover:bg-ryv-secondary rounded-md transition-all duration-300"
-                    onClick={() => setIsMobileMenuOpen(false)}
-                  >
-                    Ótica
-                  </Link>
-                  <Link
-                    href="/?category=optometria"
-                    className="block px-3 py-2 text-ryv-dark hover:text-ryv-primary hover:bg-ryv-secondary rounded-md transition-all duration-300"
-                    onClick={() => setIsMobileMenuOpen(false)}
-                  >
-                    Optometria
-                  </Link>
-                  <div className="pt-4">
-                    <button
-                      onClick={() => {
-                        handleWhatsAppClick();
-                        setIsMobileMenuOpen(false);
-                      }}
-                      className="btn-whatsapp w-full justify-center"
-                    >
-                      <PhoneIcon className="h-5 w-5" />
-                      Vamos Conversar?
-                    </button>
-                  </div>
-                </div>
+                ))}
+                <button
+                  onClick={() => {
+                    handleWhatsAppClick();
+                    setMobileMenuOpen(false);
+                  }}
+                  className="w-full mt-4 btn-whatsapp px-4 py-2 text-sm"
+                >
+                  <ChatBubbleLeftRightIcon className="h-4 w-4" />
+                  Conectar
+                </button>
               </div>
-            )}
-          </div>
+            </div>
+          )}
         </header>
 
         {/* Main Content */}
-        <main className="flex-1">{children}</main>
+        <main className="flex-grow">{children}</main>
 
         {/* Footer */}
-        <footer className="ryv-footer">
+        <footer className="bg-ryv-dark text-ryv-white">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-              {/* Company Info */}
-              <div className="col-span-1 lg:col-span-2">
-                <div className="flex items-center mb-4 fade-in">
-                  <Image
-                    src="/logo-ryv.webp"
-                    alt="RYV - Saúde & Visão"
-                    width={40}
-                    height={40}
-                    className="h-10 w-auto"
-                  />
-                  <div className="ml-3">
-                    <h3 className="text-xl font-bold text-ryv-white">RYV</h3>
-                    <p className="text-ryv-secondary">
-                      Conectando Saúde & Visão
-                    </p>
-                  </div>
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+              {/* Brand */}
+              <div className="col-span-1 md:col-span-2">
+                <div className="flex items-center mb-4">
+                  <img src="/logo-ryv.webp" alt="RYV" className="h-8 w-auto" />
+                  <span className="ml-2 text-xl font-bold">RYV</span>
                 </div>
-                <p className="text-ryv-secondary mb-4 fade-in stagger-1">
-                  Somos uma equipe apaixonada por conectar pessoas com os
-                  melhores cuidados para sua visão e bem-estar mental.
-                  Acreditamos que saúde ocular e mental caminham juntas para uma
-                  vida mais plena e conectada.
+                <p className="text-ryv-secondary mb-4 max-w-md">
+                  Conectando saúde mental e visão para uma vida mais plena e
+                  conectada. Somos especialistas em transformar sua perspectiva
+                  sobre bem-estar.
                 </p>
-                <div className="flex space-x-4 fade-in stagger-2">
+                <div className="flex space-x-4">
                   <button
                     onClick={handleWhatsAppClick}
-                    className="btn-whatsapp"
+                    className="btn-whatsapp px-4 py-2 text-sm"
                   >
-                    <PhoneIcon className="h-4 w-4" />
-                    Conecte-se Conosco
+                    <ChatBubbleLeftRightIcon className="h-4 w-4" />
+                    Conectar
                   </button>
                 </div>
               </div>
 
-              {/* Services */}
-              <div className="fade-in stagger-3">
-                <h4 className="text-lg font-semibold mb-4 text-ryv-white">
-                  Como Podemos Ajudar
-                </h4>
-                <ul className="space-y-2 text-ryv-secondary">
-                  <li className="hover:text-ryv-white transition-colors duration-300">
-                    Exames Oftalmológicos
-                  </li>
-                  <li className="hover:text-ryv-white transition-colors duration-300">
-                    Óculos e Lentes
-                  </li>
-                  <li className="hover:text-ryv-white transition-colors duration-300">
-                    Lentes de Contato
-                  </li>
-                  <li className="hover:text-ryv-white transition-colors duration-300">
-                    Óculos de Sol
-                  </li>
-                  <li className="hover:text-ryv-white transition-colors duration-300">
-                    Consultoria em Saúde Ocular
-                  </li>
+              {/* Quick Links */}
+              <div>
+                <h3 className="text-lg font-semibold mb-4">Links Rápidos</h3>
+                <ul className="space-y-2">
+                  {navigation.map((item) => (
+                    <li key={item.name}>
+                      <Link
+                        href={item.href}
+                        className="text-ryv-secondary hover:text-ryv-white transition-colors"
+                      >
+                        {item.name}
+                      </Link>
+                    </li>
+                  ))}
                 </ul>
               </div>
 
               {/* Contact Info */}
-              <div className="fade-in stagger-4">
-                <h4 className="text-lg font-semibold mb-4 text-ryv-white">
-                  Vamos Conversar?
-                </h4>
+              <div>
+                <h3 className="text-lg font-semibold mb-4">Contato</h3>
                 <div className="space-y-2 text-ryv-secondary">
-                  <p className="hover:text-ryv-white transition-colors duration-300">
-                    📍 Rua das Flores, 123
-                  </p>
-                  <p className="hover:text-ryv-white transition-colors duration-300">
-                    📞 (11) 99654-8560
-                  </p>
-                  <p className="hover:text-ryv-white transition-colors duration-300">
-                    ✉️ suporte@ryv.com.br
-                  </p>
-                  <p className="hover:text-ryv-white transition-colors duration-300">
-                    🕒 Seg-Sex: 8h-18h
-                  </p>
+                  <p>📧 contato@ryv.com.br</p>
+                  <p>📱 (11) 99999-9999</p>
+                  <p>📍 São Paulo, SP</p>
                 </div>
               </div>
             </div>
 
-            <div className="border-t border-ryv-dark-light mt-8 pt-8 text-center text-ryv-secondary fade-in stagger-5">
-              <p>
-                &copy; 2024 RYV - Conectando Saúde & Visão. Todos os direitos
-                reservados.
+            {/* Bottom Bar */}
+            <div className="border-t border-ryv-dark-light mt-8 pt-8 flex flex-col md:flex-row justify-between items-center">
+              <p className="text-ryv-secondary text-sm">
+                © 2024 RYV. Todos os direitos reservados.
               </p>
+              <div className="flex space-x-4 mt-4 md:mt-0">
+                <Link
+                  href="/politica-privacidade"
+                  className="text-ryv-secondary hover:text-ryv-white text-sm transition-colors"
+                >
+                  Política de Privacidade
+                </Link>
+                <Link
+                  href="/termos-uso"
+                  className="text-ryv-secondary hover:text-ryv-white text-sm transition-colors"
+                >
+                  Termos de Uso
+                </Link>
+              </div>
             </div>
           </div>
         </footer>
 
-        {/* Floating WhatsApp Button */}
-        <button
-          onClick={handleWhatsAppClick}
-          className="fixed bottom-6 right-6 bg-green-500 hover:bg-green-600 text-ryv-white p-4 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 z-50 transform hover:scale-110 active:scale-95"
-          aria-label="Conecte-se via WhatsApp"
-        >
-          <PhoneIcon className="h-6 w-6" />
-        </button>
+        {/* Google Ads - Banner no final */}
+        <div className="bg-gray-50 py-4">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <BannerAd />
+          </div>
+        </div>
+
+        {/* Componentes de Engajamento */}
+        <CookieConsent />
+        <DailyRecommendation />
+        <Gamification />
       </div>
     </>
   );
