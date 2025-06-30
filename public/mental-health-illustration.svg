@@ -1,0 +1,44 @@
+<svg width="400" height="300" viewBox="0 0 400 300" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background Circle -->
+  <circle cx="200" cy="150" r="140" fill="#E7DFDB" opacity="0.3"/>
+  
+  <!-- Brain/Head Silhouette -->
+  <path d="M200 80 Q160 60 120 80 Q100 100 100 130 Q100 160 120 180 Q140 190 160 185 Q180 180 200 185 Q220 180 240 185 Q260 190 280 180 Q300 160 300 130 Q300 100 280 80 Q240 60 200 80" 
+        fill="#718973" opacity="0.8"/>
+  
+  <!-- Brain Details -->
+  <path d="M140 100 Q160 90 180 100 Q200 110 220 100 Q240 90 260 100" 
+        stroke="#2C2C2C" stroke-width="2" fill="none" opacity="0.6"/>
+  <path d="M140 120 Q160 110 180 120 Q200 130 220 120 Q240 110 260 120" 
+        stroke="#2C2C2C" stroke-width="2" fill="none" opacity="0.6"/>
+  <path d="M140 140 Q160 130 180 140 Q200 150 220 140 Q240 130 260 140" 
+        stroke="#2C2C2C" stroke-width="2" fill="none" opacity="0.6"/>
+  
+  <!-- Heart Symbol -->
+  <path d="M320 100 Q310 90 300 100 Q290 110 300 120 Q310 130 320 120 Q330 110 320 100" 
+        fill="#718973"/>
+  
+  <!-- Eye Symbol -->
+  <ellipse cx="160" cy="110" rx="8" ry="5" fill="#2C2C2C"/>
+  <ellipse cx="240" cy="110" rx="8" ry="5" fill="#2C2C2C"/>
+  <circle cx="160" cy="110" r="3" fill="#FFFFFF"/>
+  <circle cx="240" cy="110" r="3" fill="#FFFFFF"/>
+  
+  <!-- Connection Lines -->
+  <path d="M180 150 Q200 140 220 150" 
+        stroke="#718973" stroke-width="3" fill="none" opacity="0.7"/>
+  <path d="M160 170 Q200 160 240 170" 
+        stroke="#718973" stroke-width="3" fill="none" opacity="0.7"/>
+  
+  <!-- Floating Elements -->
+  <circle cx="80" cy="80" r="4" fill="#718973" opacity="0.6"/>
+  <circle cx="320" cy="200" r="3" fill="#718973" opacity="0.6"/>
+  <circle cx="90" cy="220" r="5" fill="#718973" opacity="0.6"/>
+  <circle cx="310" cy="90" r="4" fill="#718973" opacity="0.6"/>
+  
+  <!-- Decorative Dots -->
+  <circle cx="60" cy="120" r="2" fill="#2C2C2C" opacity="0.4"/>
+  <circle cx="340" cy="150" r="2" fill="#2C2C2C" opacity="0.4"/>
+  <circle cx="70" cy="180" r="2" fill="#2C2C2C" opacity="0.4"/>
+  <circle cx="330" cy="180" r="2" fill="#2C2C2C" opacity="0.4"/>
+</svg> 
