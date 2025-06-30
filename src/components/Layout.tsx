@@ -12,7 +12,6 @@ import DailyRecommendation from "./DailyRecommendation";
 import Gamification from "./Gamification";
 import { BannerAd } from "./GoogleAds";
 import Image from "next/image";
-import Script from "next/script";
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -82,19 +81,6 @@ const Layout: React.FC<LayoutProps> = ({
           src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-YOUR_PUBLISHER_ID"
           crossOrigin="anonymous"
         ></script>
-
-        {/* Google Analytics */}
-        <Script src="https://www.googletagmanager.com/gtag/js?id=GA_MEASUREMENT_ID"></Script>
-        <Script
-          dangerouslySetInnerHTML={{
-            __html: `
-              window.dataLayer = window.dataLayer || [];
-              function gtag(){dataLayer.push(arguments);}
-              gtag('js', new Date());
-              gtag('config', 'GA_MEASUREMENT_ID');
-            `,
-          }}
-        />
       </Head>
 
       <div className="min-h-screen bg-ryv-white">

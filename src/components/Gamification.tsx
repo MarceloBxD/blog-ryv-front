@@ -1,12 +1,9 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import {
   TrophyIcon,
   FireIcon,
   StarIcon,
   BookOpenIcon,
-  // HeartIcon,
-  // ShareIcon,
-  // EyeIcon,
 } from "@heroicons/react/24/outline";
 
 interface UserStats {
@@ -30,11 +27,6 @@ const Gamification: React.FC = () => {
   const [showStats, setShowStats] = useState(false);
   const [showAchievement, setShowAchievement] = useState<string | null>(null);
 
-  useEffect(() => {
-    loadUserStats();
-    checkForAchievements();
-  }, [checkForAchievements]);
-
   const loadUserStats = () => {
     const savedStats = localStorage.getItem("user-stats");
     if (savedStats) {
@@ -42,100 +34,64 @@ const Gamification: React.FC = () => {
     }
   };
 
-  const updateStats = (action: string) => {
-    const today = new Date().toDateString();
-    const newStats = { ...stats };
+  const checkForAchievements = useCallback(
+    (currentStats = stats) => {
+      const newAchievements = [];
 
-    switch (action) {
-      case "read_article":
-        newStats.articlesRead += 1;
-        newStats.totalPoints += 10;
+      if (
+        currentStats.articlesRead >= 5 &&
+        !currentStats.achievements.includes("first_reader")
+      ) {
+        newAchievements.push("first_reader");
+        showAchievementNotification("🎉 Primeiro Leitor! Você leu 5 artigos!");
+      }
 
-        // Verificar streak
-        if (newStats.lastReadDate !== today) {
-          const yesterday = new Date();
-          yesterday.setDate(yesterday.getDate() - 1);
-          const yesterdayStr = yesterday.toDateString();
+      if (
+        currentStats.streakDays >= 7 &&
+        !currentStats.achievements.includes("week_warrior")
+      ) {
+        newAchievements.push("week_warrior");
+        showAchievementNotification(
+          "🔥 Guerreiro da Semana! 7 dias seguidos lendo!"
+        );
+      }
 
-          if (newStats.lastReadDate === yesterdayStr) {
-            newStats.streakDays += 1;
-            newStats.totalPoints += 5; // Bônus de streak
-          } else if (newStats.lastReadDate !== today) {
-            newStats.streakDays = 1;
-          }
-        }
+      if (
+        currentStats.totalPoints >= 100 &&
+        !currentStats.achievements.includes("century_club")
+      ) {
+        newAchievements.push("century_club");
+        showAchievementNotification(
+          "💎 Clube dos 100! Você alcançou 100 pontos!"
+        );
+      }
 
-        newStats.lastReadDate = today;
-        break;
+      if (
+        currentStats.level >= 5 &&
+        !currentStats.achievements.includes("knowledge_seeker")
+      ) {
+        newAchievements.push("knowledge_seeker");
+        showAchievementNotification(
+          "🌟 Buscador do Conhecimento! Nível 5 alcançado!"
+        );
+      }
 
-      case "share_article":
-        newStats.totalPoints += 5;
-        break;
+      if (newAchievements.length > 0) {
+        const updatedStats = {
+          ...currentStats,
+          achievements: [...currentStats.achievements, ...newAchievements],
+        };
+        setStats(updatedStats);
+        localStorage.setItem("user-stats", JSON.stringify(updatedStats));
+      }
+    },
+    [stats]
+  );
 
-      case "like_article":
-        newStats.totalPoints += 2;
-        break;
-    }
-
-    // Calcular nível
-    newStats.level = Math.floor(newStats.totalPoints / 50) + 1;
-
-    setStats(newStats);
-    localStorage.setItem("user-stats", JSON.stringify(newStats));
-
-    checkForAchievements(newStats);
-  };
-
-  const checkForAchievements = (currentStats = stats) => {
-    const newAchievements = [];
-
-    if (
-      currentStats.articlesRead >= 5 &&
-      !currentStats.achievements.includes("first_reader")
-    ) {
-      newAchievements.push("first_reader");
-      showAchievementNotification("🎉 Primeiro Leitor! Você leu 5 artigos!");
-    }
-
-    if (
-      currentStats.streakDays >= 7 &&
-      !currentStats.achievements.includes("week_warrior")
-    ) {
-      newAchievements.push("week_warrior");
-      showAchievementNotification(
-        "🔥 Guerreiro da Semana! 7 dias seguidos lendo!"
-      );
-    }
-
-    if (
-      currentStats.totalPoints >= 100 &&
-      !currentStats.achievements.includes("century_club")
-    ) {
-      newAchievements.push("century_club");
-      showAchievementNotification(
-        "💎 Clube dos 100! Você alcançou 100 pontos!"
-      );
-    }
-
-    if (
-      currentStats.level >= 5 &&
-      !currentStats.achievements.includes("knowledge_seeker")
-    ) {
-      newAchievements.push("knowledge_seeker");
-      showAchievementNotification(
-        "🌟 Buscador do Conhecimento! Nível 5 alcançado!"
-      );
-    }
-
-    if (newAchievements.length > 0) {
-      const updatedStats = {
-        ...currentStats,
-        achievements: [...currentStats.achievements, ...newAchievements],
-      };
-      setStats(updatedStats);
-      localStorage.setItem("user-stats", JSON.stringify(updatedStats));
-    }
-  };
+  useEffect(() => {
+    loadUserStats();
+    checkForAchievements();
+  }, [checkForAchievements]);
 
   const showAchievementNotification = (message: string) => {
     setShowAchievement(message);
