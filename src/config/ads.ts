@@ -1,7 +1,7 @@
 // Configuração do Google AdSense
 export const ADS_CONFIG = {
   // Substitua pelo seu Publisher ID do Google AdSense
-  PUBLISHER_ID: "ca-pub-YOUR_PUBLISHER_ID",
+  PUBLISHER_ID: process.env.NEXT_PUBLIC_ADSENSE_PUBLISHER_ID || "",
 
   // IDs dos slots de anúncios
   AD_SLOTS: {
@@ -110,12 +110,19 @@ export const shouldShowAds = (): boolean => {
   return true;
 };
 
+// Tipagem para extensões do window
+interface WindowAdSenseAnalytics extends Window {
+  adsbygoogle?: unknown[];
+  gtag?: (...args: unknown[]) => void;
+  dataLayer?: unknown[];
+}
+
 // Função para carregar script do Google AdSense
 export const loadAdSense = (): void => {
   if (typeof window === "undefined") return;
 
   // Verificar se já foi carregado
-  if ((window as any).adsbygoogle) return;
+  if ((window as WindowAdSenseAnalytics).adsbygoogle) return;
 
   const script = document.createElement("script");
   script.async = true;
@@ -129,7 +136,7 @@ export const loadAnalytics = (): void => {
   if (typeof window === "undefined") return;
 
   // Verificar se já foi carregado
-  if ((window as any).gtag) return;
+  if ((window as WindowAdSenseAnalytics).gtag) return;
 
   const script = document.createElement("script");
   script.async = true;
@@ -137,11 +144,12 @@ export const loadAnalytics = (): void => {
   document.head.appendChild(script);
 
   // Configurar gtag
-  (window as any).dataLayer = (window as any).dataLayer || [];
-  function gtag(...args: any[]) {
-    (window as any).dataLayer.push(args);
+  (window as WindowAdSenseAnalytics).dataLayer =
+    (window as WindowAdSenseAnalytics).dataLayer || [];
+  function gtag(...args: unknown[]) {
+    (window as WindowAdSenseAnalytics).dataLayer!.push(args);
   }
-  (window as any).gtag = gtag;
+  (window as WindowAdSenseAnalytics).gtag = gtag;
 
   gtag("js", new Date());
   gtag("config", ANALYTICS_CONFIG.MEASUREMENT_ID);
@@ -150,12 +158,12 @@ export const loadAnalytics = (): void => {
 // Função para rastrear eventos
 export const trackEvent = (
   eventName: string,
-  parameters?: Record<string, any>
+  parameters?: Record<string, unknown>
 ): void => {
   if (typeof window === "undefined") return;
 
-  if ((window as any).gtag) {
-    (window as any).gtag("event", eventName, parameters);
+  if ((window as WindowAdSenseAnalytics).gtag) {
+    (window as WindowAdSenseAnalytics).gtag!("event", eventName, parameters);
   }
 
   // Log local para desenvolvimento
