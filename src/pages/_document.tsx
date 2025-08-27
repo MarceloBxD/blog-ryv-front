@@ -4,80 +4,68 @@ export default function Document() {
   return (
     <Html lang="pt-BR">
       <Head>
-        {/* Meta Tags Básicas */}
-        <meta charSet="utf-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <meta
-          name="description"
-          content="RYV - Conectando saúde mental e visão. Descubra como cuidar da sua visão pode transformar sua saúde mental. Especialistas em óptica e bem-estar emocional."
-        />
-        <meta
-          name="keywords"
-          content="saúde mental, visão, óptica, bem-estar, oftalmologia, saúde ocular, RYV, conexão mente-corpo"
-        />
-        <meta name="author" content="RYV" />
-        <meta name="robots" content="index, follow" />
-
-        {/* Open Graph / Facebook */}
-        <meta property="og:type" content="website" />
-        <meta property="og:url" content="https://ryv.com.br/" />
-        <meta
-          property="og:title"
-          content="RYV - Conectando Saúde Mental e Visão"
-        />
-        <meta
-          property="og:description"
-          content="Descubra como cuidar da sua visão pode transformar sua saúde mental. Somos especialistas em conectar esses dois mundos para uma vida mais plena."
-        />
-        <meta
-          property="og:image"
-          content="https://ryv.com.br/mental-health-illustration.svg"
-        />
-        <meta property="og:image:width" content="400" />
-        <meta property="og:image:height" content="300" />
-        <meta property="og:site_name" content="RYV" />
-        <meta property="og:locale" content="pt_BR" />
-
-        {/* Twitter */}
-        <meta property="twitter:card" content="summary_large_image" />
-        <meta property="twitter:url" content="https://ryv.com.br/" />
-        <meta
-          property="twitter:title"
-          content="RYV - Conectando Saúde Mental e Visão"
-        />
-        <meta
-          property="twitter:description"
-          content="Descubra como cuidar da sua visão pode transformar sua saúde mental. Somos especialistas em conectar esses dois mundos para uma vida mais plena."
-        />
-        <meta
-          property="twitter:image"
-          content="https://ryv.com.br/mental-health-illustration.svg"
-        />
-
-        {/* Favicon e Ícones */}
-        <link rel="icon" href="/mental.webp" />
-        <link rel="apple-touch-icon" sizes="180x180" href="/mental.webp" />
-        <link rel="icon" type="image/webp" sizes="32x32" href="/mental.webp" />
-        <link rel="icon" type="image/webp" sizes="16x16" href="/mental.webp" />
-
-        {/* Canonical URL */}
-        <link rel="canonical" href="https://ryv.com.br/" />
-
-        {/* Sitemap */}
-        <link
-          rel="sitemap"
-          type="application/xml"
-          title="Sitemap"
-          href="/sitemap.xml"
-        />
-
-        {/* Preconnect para performance */}
+        {/* Google Fonts - Cormorant Garamond */}
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link
           rel="preconnect"
           href="https://fonts.gstatic.com"
           crossOrigin="anonymous"
         />
+        <link
+          href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&display=swap"
+          rel="stylesheet"
+        />
+
+        {/* Meta tags para SEO */}
+        <meta
+          name="description"
+          content="RYV - Conectando Saúde Mental e Visão. Descubra como cuidar da sua visão pode transformar sua saúde mental. Blog especializado em óptica, bem-estar e conexão mente-corpo."
+        />
+        <meta
+          name="keywords"
+          content="saúde mental, visão, óptica, bem-estar, oftalmologia, saúde ocular, RYV, blog, conexão mente-corpo, lentes, óculos"
+        />
+        <meta name="author" content="RYV" />
+        <meta name="robots" content="index, follow" />
+
+        {/* Open Graph */}
+        <meta
+          property="og:title"
+          content="RYV - Conectando Saúde Mental e Visão"
+        />
+        <meta
+          property="og:description"
+          content="Descubra como cuidar da sua visão pode transformar sua saúde mental. Blog da RYV com conteúdo exclusivo sobre óptica e bem-estar."
+        />
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content="https://ryv.com.br/" />
+        <meta
+          property="og:image"
+          content="https://ryv.com.br/husky-oculos.webp"
+        />
+        <meta property="og:site_name" content="RYV Blog" />
+
+        {/* Twitter Cards */}
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta
+          name="twitter:title"
+          content="RYV - Conectando Saúde Mental e Visão"
+        />
+        <meta
+          name="twitter:description"
+          content="Descubra como cuidar da sua visão pode transformar sua saúde mental. Blog da RYV com conteúdo exclusivo sobre óptica e bem-estar."
+        />
+        <meta
+          name="twitter:image"
+          content="https://ryv.com.br/husky-oculos.webp"
+        />
+
+        {/* Canonical URL */}
+        <link rel="canonical" href="https://ryv.com.br/" />
+
+        {/* Favicon */}
+        <link rel="icon" type="image/webp" href="/mental.webp" />
+        <link rel="apple-touch-icon" href="/mental.webp" />
 
         {/* Structured Data */}
         <script
@@ -89,17 +77,8 @@ export default function Document() {
               name: "RYV",
               url: "https://ryv.com.br",
               logo: "https://ryv.com.br/logo-ryv.webp",
-              description:
-                "Conectando saúde mental e visão para uma vida mais plena",
-              address: {
-                "@type": "PostalAddress",
-                addressCountry: "BR",
-              },
-              contactPoint: {
-                "@type": "ContactPoint",
-                contactType: "customer service",
-                availableLanguage: "Portuguese",
-              },
+              description: "Conectando Saúde Mental e Visão",
+              sameAs: ["https://instagram.com/ryv", "https://facebook.com/ryv"],
             }),
           }}
         />
@@ -111,7 +90,7 @@ export default function Document() {
           crossOrigin="anonymous"
         ></script>
       </Head>
-      <body className="antialiased">
+      <body>
         <Main />
         <NextScript />
       </body>

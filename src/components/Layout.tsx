@@ -246,7 +246,7 @@ const Layout: React.FC<LayoutProps> = ({
 
             {/* Bottom Bar */}
             <div className="border-t border-ryv-dark-light mt-8 pt-8 flex flex-col md:flex-row justify-between items-center">
-              <p className="text-ryv-secondary text-sm">
+              <p className="text-sm">
                 © 2024 RYV. Todos os direitos reservados.
               </p>
               <div className="flex space-x-4 mt-4 md:mt-0">

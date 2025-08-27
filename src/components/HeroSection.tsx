@@ -1,150 +1,171 @@
-import React from "react";
+import { useEffect, useState } from "react";
 import {
-  HeartIcon,
-  SparklesIcon,
   ChatBubbleLeftRightIcon,
+  HeartIcon,
 } from "@heroicons/react/24/outline";
-import Image from "next/image";
 
-const HeroSection: React.FC = () => {
-  const handleWhatsAppClick = async () => {
+export default function HeroSection() {
+  const [isVisible, setIsVisible] = useState(false);
+
+  useEffect(() => {
+    setIsVisible(true);
+  }, []);
+
+  const handleWhatsAppClick = () => {
     const message = encodeURIComponent(
-      "Olá! Vi o site da RYV e fiquei impressionado com a conexão que vocês fazem entre saúde mental e visão. Gostaria de saber mais sobre como vocês podem me ajudar!"
+      "Olá! Vi o site da RYV e gostaria de saber mais sobre como vocês podem me ajudar com minha saúde ocular e bem-estar. Podemos conversar?"
     );
-    const phone = "5511999999999"; // Substitua pelo número real
+    const phone = "5511999999999";
 
-    // Registrar contato no banco de dados
-    try {
-      await fetch("http://localhost:3001/api/whatsapp/contact", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          name: "Visitante do Site",
-          phone: "Não informado",
-          message: "Cliqueu no botão WhatsApp do Hero",
-          source: window.location.href,
-        }),
-      });
-    } catch (error) {
-      console.log("Erro ao registrar contato:", error);
-    }
+    // Log do contato no backend
+    fetch("http://localhost:3001/api/whatsapp-contacts", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        phone: phone,
+        message: message,
+        source: "hero_section",
+      }),
+    }).catch(console.error);
 
-    // Abrir WhatsApp
     window.open(`https://wa.me/${phone}?text=${message}`, "_blank");
   };
 
   return (
-    <section className="gradient-bg relative overflow-hidden">
+    <section className="relative min-h-screen bg-background overflow-hidden">
       {/* Background Pattern */}
-      <div className="absolute inset-0 opacity-10">
-        <div className="absolute top-0 left-0 w-72 h-72 bg-ryv-primary rounded-full mix-blend-multiply filter blur-xl animate-pulse"></div>
-        <div className="absolute top-0 right-0 w-72 h-72 bg-ryv-secondary rounded-full mix-blend-multiply filter blur-xl animate-pulse animation-delay-2000"></div>
-        <div className="absolute bottom-0 left-1/2 w-72 h-72 bg-ryv-primary-light rounded-full mix-blend-multiply filter blur-xl animate-pulse animation-delay-4000"></div>
+      <div className="absolute inset-0 opacity-5">
+        <div className="absolute top-20 left-10 w-32 h-32 bg-accent rounded-full blur-3xl"></div>
+        <div className="absolute bottom-20 right-10 w-40 h-40 bg-accent-light rounded-full blur-3xl"></div>
       </div>
 
-      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-          {/* Conteúdo Textual */}
-          <div className="text-center lg:text-left">
-            {/* Badge */}
-            <div className="inline-flex items-center px-4 py-2 bg-ryv-white/80 backdrop-blur-sm rounded-full text-sm font-medium text-ryv-dark mb-8">
-              <SparklesIcon className="h-4 w-4 mr-2 text-ryv-primary" />
+      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-20 pb-16">
+        <div className="grid lg:grid-cols-2 gap-12 items-center">
+          {/* Content Left */}
+          <div
+            className={`space-y-8 ${
+              isVisible ? "animate-fade-in-up" : "opacity-0"
+            }`}
+          >
+            {/* Tag */}
+            <div className="inline-flex items-center gap-2 bg-accent-light/20 text-accent px-4 py-2 rounded-full text-sm font-medium animate-fade-in">
+              <div className="w-2 h-2 bg-accent rounded-full"></div>
               Conectando Saúde Mental e Visão
             </div>
 
-            {/* Main Heading */}
-            <h1 className="text-4xl md:text-6xl font-bold text-ryv-dark mb-6">
-              Sua <span className="text-gradient">Visão</span> Conectada
-              <br />
-              ao seu <span className="text-gradient">Bem-estar</span>
-            </h1>
+            {/* Main Headline */}
+            <div className="space-y-4">
+              <h1 className="text-5xl lg:text-6xl font-bold leading-tight">
+                <span className="text-primary">Sua</span>{" "}
+                <span className="text-accent">Visão</span>{" "}
+                <span className="text-primary">Conectada</span> <br />
+                <span className="text-primary">ao seu</span>{" "}
+                <span className="text-accent">Bem-estar</span>
+              </h1>
 
-            {/* Subtitle */}
-            <p className="text-xl text-ryv-dark-light mb-8 leading-relaxed">
-              Descubra como cuidar da sua visão pode transformar sua saúde
-              mental. Somos especialistas em conectar esses dois mundos para uma
-              vida mais plena e conectada.
-            </p>
+              <p className="text-xl text-secondary leading-relaxed max-w-2xl">
+                Descubra como cuidar da sua visão pode transformar sua saúde
+                mental. Somos especialistas em conectar esses dois mundos para
+                uma vida mais plena e conectada.
+              </p>
+            </div>
 
             {/* CTA Buttons */}
-            <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start items-center mb-12">
+            <div className="flex flex-col sm:flex-row gap-4">
               <button
                 onClick={handleWhatsAppClick}
-                className="btn-whatsapp text-lg px-8 py-4"
+                className="btn-primary flex items-center justify-center gap-3 text-lg px-8 py-4 animate-scale-in"
+                style={{ animationDelay: "0.3s" }}
               >
                 <ChatBubbleLeftRightIcon className="h-6 w-6" />
                 Vamos Conversar?
               </button>
-              <a href="#artigos" className="btn-secondary text-lg px-8 py-4">
-                <HeartIcon className="h-6 w-6 mr-2" />
-                Descobrir Mais
-              </a>
-            </div>
 
-            {/* Stats */}
-            <div className="grid grid-cols-3 gap-8 max-w-md mx-auto lg:mx-0">
-              <div className="text-center">
-                <div className="text-3xl font-bold text-ryv-primary mb-2">
-                  500+
-                </div>
-                <div className="text-ryv-dark-light text-sm">
-                  Vidas Conectadas
-                </div>
-              </div>
-              <div className="text-center">
-                <div className="text-3xl font-bold text-ryv-primary-light mb-2">
-                  50+
-                </div>
-                <div className="text-ryv-dark-light text-sm">
-                  Histórias Compartilhadas
-                </div>
-              </div>
-              <div className="text-center">
-                <div className="text-3xl font-bold text-ryv-primary mb-2">
-                  98%
-                </div>
-                <div className="text-ryv-dark-light text-sm">Confiança</div>
-              </div>
+              <button
+                className="btn-secondary flex items-center justify-center gap-3 text-lg px-8 py-4 animate-scale-in"
+                style={{ animationDelay: "0.5s" }}
+              >
+                <HeartIcon className="h-6 w-6" />
+                Descobrir Mais
+              </button>
             </div>
           </div>
 
-          {/* Imagem de Saúde Mental */}
-          <div className="flex justify-center lg:justify-end">
-            <div className="relative w-80 h-60 lg:w-96 lg:h-72">
-              <Image
-                src="/mental-health-illustration.svg"
-                alt="Ilustração conectando saúde mental e visão"
-                fill
-                className="object-contain animate-float"
-                priority
-              />
+          {/* Image Right */}
+          <div
+            className={`relative ${
+              isVisible ? "animate-fade-in-up" : "opacity-0"
+            }`}
+            style={{ animationDelay: "0.2s" }}
+          >
+            <div className="relative">
+              {/* Background Circle */}
+              <div className="absolute inset-0 bg-accent-light/30 rounded-full blur-3xl scale-150 animate-float"></div>
+
+              {/* Main Image Container */}
+              <div className="relative bg-white/50 backdrop-blur-sm rounded-3xl p-8 shadow-2xl border border-white/20">
+                <img
+                  src="/husky-oculos.webp"
+                  alt="Husky com óculos - Conectando saúde mental e visão"
+                  className="w-full h-auto rounded-2xl object-cover animate-gentle-pulse"
+                  style={{ animationDelay: "0.4s" }}
+                />
+              </div>
+
+              {/* Floating Elements */}
+              <div
+                className="absolute -top-4 -right-4 w-8 h-8 bg-accent rounded-full animate-float"
+                style={{ animationDelay: "1s" }}
+              ></div>
+              <div
+                className="absolute -bottom-6 -left-6 w-6 h-6 bg-accent-light rounded-full animate-float"
+                style={{ animationDelay: "1.5s" }}
+              ></div>
             </div>
           </div>
         </div>
-      </div>
 
-      {/* Scroll Indicator */}
-      <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2">
-        <div className="animate-bounce">
+        {/* Stats Section */}
+        <div
+          className={`mt-20 grid grid-cols-3 gap-8 text-center ${
+            isVisible ? "animate-fade-in-up" : "opacity-0"
+          }`}
+          style={{ animationDelay: "0.8s" }}
+        >
+          <div className="space-y-2">
+            <div className="text-3xl font-bold text-primary">500+</div>
+            <div className="text-secondary">Vidas Conectadas</div>
+          </div>
+          <div className="space-y-2">
+            <div className="text-3xl font-bold text-primary">50+</div>
+            <div className="text-secondary">Histórias</div>
+          </div>
+          <div className="space-y-2">
+            <div className="text-3xl font-bold text-primary">98%</div>
+            <div className="text-secondary">Confiança</div>
+          </div>
+        </div>
+
+        {/* Bottom Right Icon */}
+        <div
+          className="absolute bottom-8 right-8 w-12 h-12 bg-accent rounded-full flex items-center justify-center animate-float"
+          style={{ animationDelay: "2s" }}
+        >
           <svg
-            className="h-6 w-6 text-ryv-dark-lighter"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
+            className="w-6 h-6 text-white"
+            fill="currentColor"
+            viewBox="0 0 20 20"
           >
             <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M19 14l-7 7m0 0l-7-7m7 7V3"
+              fillRule="evenodd"
+              d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+              clipRule="evenodd"
             />
           </svg>
         </div>
       </div>
     </section>
   );
-};
-
-export default HeroSection;
+}
